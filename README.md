@@ -339,11 +339,38 @@ limit_req_zone $binary_remote_addr zone=api:10m rate=100r/m;
 limit_req_zone $binary_remote_addr zone=general:10m rate=200r/m;
 ```
 
-### Configurar o Site
+### Configurar o Site (Processo em 2 etapas)
+
+#### Etapa 1: Configuração HTTP temporária
 
 ```bash
-# Copiar arquivo de configuração (agenda.aplopes.com.conf)
-sudo cp agenda.aplopes.com.conf /etc/nginx/sites-available/
+# Criar configuração temporária apenas HTTP
+sudo tee /etc/nginx/sites-available/agenda.aplopes.com.conf > /dev/null <<EOF
+server {
+    listen 80;
+    listen [::]:80;
+    server_name agenda.aplopes.com www.agenda.aplopes.com;
+
+    # Logs
+    access_log /var/log/nginx/agenda.aplopes.com.access.log;
+    error_log /var/log/nginx/agenda.aplopes.com.error.log;
+
+    # Proxy para Spring Boot
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    # Health check
+    location /actuator/health {
+        proxy_pass http://localhost:8080/actuator/health;
+        proxy_set_header Host \$host;
+    }
+}
+EOF
 
 # Criar link simbólico
 sudo ln -s /etc/nginx/sites-available/agenda.aplopes.com.conf /etc/nginx/sites-enabled/
@@ -355,7 +382,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### Configurar SSL com Let's Encrypt
+#### Etapa 2: Configurar SSL com Let's Encrypt
 
 ```bash
 # Instalar certbot
@@ -363,8 +390,17 @@ sudo apt install snapd
 sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
-# Obter certificado SSL
+# Obter certificado SSL (isso vai modificar automaticamente a configuração)
 sudo certbot --nginx -d agenda.aplopes.com
+
+# Agora substituir pela configuração completa
+sudo cp agenda.aplopes.com.conf /etc/nginx/sites-available/agenda.aplopes.com.conf
+
+# Testar configuração
+sudo nginx -t
+
+# Recarregar Nginx
+sudo systemctl reload nginx
 
 # Configurar renovação automática
 sudo crontab -e
@@ -408,6 +444,27 @@ sudo systemctl restart nginx
 # Testar configuração
 sudo nginx -t
 ```
+
+### Solução para Problemas de CORS
+
+Se você encontrar erros de CORS como "multiple values '*, *'", siga estes passos:
+
+```bash
+# 1. Atualizar a aplicação com a nova configuração CORS
+./deploy-vps.sh
+
+# 2. Atualizar configuração do Nginx
+sudo cp agenda.aplopes.com.conf /etc/nginx/sites-available/agenda.aplopes.com.conf
+
+# 3. Testar e recarregar
+sudo nginx -t
+sudo systemctl reload nginx
+
+# 4. Reiniciar a aplicação Spring Boot
+docker-compose restart
+```
+
+A nova configuração remove CORS do Nginx e deixa o Spring Boot gerenciar completamente.
 
 ## 📄 Licença
 

@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/agenda")
-@CrossOrigin(origins = "*")
 public class ContactController {
     
     @Autowired
