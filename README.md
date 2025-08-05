@@ -308,6 +308,107 @@ Executar testes com:
 ./mvnw test
 ```
 
+## 🌐 Configuração do Nginx (Produção)
+
+### Pré-requisitos para Nginx
+- VPS com Ubuntu/Debian
+- Domínio `agenda.aplopes.com` apontando para o IP da VPS
+- Aplicação Spring Boot rodando na porta 8080
+
+### Instalação do Nginx
+
+```bash
+# Atualizar pacotes
+sudo apt update
+
+# Instalar Nginx
+sudo apt install nginx -y
+
+# Iniciar e habilitar Nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+### Configurar Rate Limiting
+
+Adicione no arquivo `/etc/nginx/nginx.conf` dentro do bloco `http`:
+
+```nginx
+# Rate limiting zones
+limit_req_zone $binary_remote_addr zone=api:10m rate=100r/m;
+limit_req_zone $binary_remote_addr zone=general:10m rate=200r/m;
+```
+
+### Configurar o Site
+
+```bash
+# Copiar arquivo de configuração (agenda.aplopes.com.conf)
+sudo cp agenda.aplopes.com.conf /etc/nginx/sites-available/
+
+# Criar link simbólico
+sudo ln -s /etc/nginx/sites-available/agenda.aplopes.com.conf /etc/nginx/sites-enabled/
+
+# Testar configuração
+sudo nginx -t
+
+# Recarregar Nginx
+sudo systemctl reload nginx
+```
+
+### Configurar SSL com Let's Encrypt
+
+```bash
+# Instalar certbot
+sudo apt install snapd
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+# Obter certificado SSL
+sudo certbot --nginx -d agenda.aplopes.com
+
+# Configurar renovação automática
+sudo crontab -e
+# Adicionar: 0 2 * * * /usr/bin/certbot renew --quiet
+```
+
+### Configurar Firewall
+
+```bash
+# Permitir HTTP e HTTPS
+sudo ufw allow 'Nginx Full'
+sudo ufw allow 80
+sudo ufw allow 443
+```
+
+### Testar Configuração
+
+```bash
+# Testar redirect HTTP → HTTPS
+curl -I http://agenda.aplopes.com
+
+# Testar HTTPS
+curl -I https://agenda.aplopes.com
+
+# Testar API
+curl https://agenda.aplopes.com/actuator/health
+```
+
+### Comandos Úteis do Nginx
+
+```bash
+# Ver logs
+sudo tail -f /var/log/nginx/agenda.aplopes.com.access.log
+sudo tail -f /var/log/nginx/agenda.aplopes.com.error.log
+
+# Gerenciar serviço
+sudo systemctl status nginx
+sudo systemctl reload nginx
+sudo systemctl restart nginx
+
+# Testar configuração
+sudo nginx -t
+```
+
 ## 📄 Licença
 
 Este projeto é para fins educacionais.
