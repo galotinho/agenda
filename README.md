@@ -1,21 +1,21 @@
-# Agenda Spring Boot Application
+# API Agenda Spring Boot
 
-A RESTful API for user authentication and contact management built with Spring Boot, Maven, and H2 database.
+Uma API RESTful para autenticação de usuários e gerenciamento de contatos construída com Spring Boot, Maven e banco de dados H2.
 
-## Features
+## 🚀 Funcionalidades
 
-### Authentication
-- **User Registration**: `POST /api/auth/signup`
-- **User Login**: `POST /api/auth/login`
+### Autenticação
+- **Registro de Usuário**: `POST /api/auth/signup`
+- **Login de Usuário**: `POST /api/auth/login`
 
-### Contact Management (CRUD)
-- **Create Contact**: `POST /api/agenda`
-- **List All Contacts**: `GET /api/agenda`
-- **Get Contact by ID**: `GET /api/agenda/{id}`
-- **Update Contact**: `PUT /api/agenda/{id}`
-- **Delete Contact**: `DELETE /api/agenda/{id}`
+### Gerenciamento de Contatos (CRUD)
+- **Criar Contato**: `POST /api/agenda`
+- **Listar Todos os Contatos**: `GET /api/agenda`
+- **Buscar Contato por ID**: `GET /api/agenda/{id}`
+- **Atualizar Contato**: `PUT /api/agenda/{id}`
+- **Excluir Contato**: `DELETE /api/agenda/{id}`
 
-## Technology Stack
+## 🛠️ Tecnologias Utilizadas
 
 - **Java 17**
 - **Spring Boot 3.2.0**
@@ -23,31 +23,31 @@ A RESTful API for user authentication and contact management built with Spring B
 - **Spring Boot Starter Data JPA**
 - **Spring Boot DevTools**
 - **Spring Boot Actuator**
-- **H2 Database** (in-memory)
-- **Maven** (build tool)
+- **Banco H2** (em memória)
+- **Maven** (ferramenta de build)
 
-## Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 src/
 ├── main/
 │   ├── java/com/example/agenda/
-│   │   ├── controller/          # REST Controllers
-│   │   ├── dto/                 # Data Transfer Objects
-│   │   ├── model/               # JPA Entities
-│   │   ├── repository/          # JPA Repositories
-│   │   ├── service/             # Business Logic
+│   │   ├── controller/          # Controladores REST
+│   │   ├── dto/                 # Objetos de Transferência de Dados
+│   │   ├── model/               # Entidades JPA
+│   │   ├── repository/          # Repositórios JPA
+│   │   ├── service/             # Lógica de Negócio
 │   │   └── AgendaApplication.java
 │   └── resources/
 │       ├── application.properties
 │       └── application-prod.properties
 ```
 
-## API Endpoints
+## 📡 Endpoints da API
 
-### Authentication
+### Autenticação
 
-#### Register User
+#### Registrar Usuário
 ```http
 POST /api/auth/signup
 Content-Type: application/json
@@ -59,7 +59,7 @@ Content-Type: application/json
 }
 ```
 
-#### Login User
+#### Login do Usuário
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -70,9 +70,9 @@ Content-Type: application/json
 }
 ```
 
-### Contact Management
+### Gerenciamento de Contatos
 
-#### Create Contact
+#### Criar Contato
 ```http
 POST /api/agenda
 Content-Type: application/json
@@ -83,17 +83,17 @@ Content-Type: application/json
 }
 ```
 
-#### Get All Contacts
+#### Listar Todos os Contatos
 ```http
 GET /api/agenda
 ```
 
-#### Get Contact by ID
+#### Buscar Contato por ID
 ```http
 GET /api/agenda/1
 ```
 
-#### Update Contact
+#### Atualizar Contato
 ```http
 PUT /api/agenda/1
 Content-Type: application/json
@@ -104,129 +104,210 @@ Content-Type: application/json
 }
 ```
 
-#### Delete Contact
+#### Excluir Contato
 ```http
 DELETE /api/agenda/1
 ```
 
-## Running the Application
+## 🏃‍♂️ Executando a Aplicação
 
-### Local Development
+### Desenvolvimento Local
 
-1. **Prerequisites**: Java 17, Maven (or use included Maven wrapper)
+1. **Pré-requisitos**: Java 17, Maven (ou use o Maven wrapper incluído)
 
-2. **Run the application**:
+2. **Executar a aplicação**:
    ```bash
    ./mvnw spring-boot:run
    ```
 
-3. **Access the application**:
+3. **Acessar a aplicação**:
    - API: http://localhost:8080
-   - H2 Console: http://localhost:8080/h2-console
+   - Console H2: http://localhost:8080/h2-console
    - Health Check: http://localhost:8080/actuator/health
 
-### Docker Deployment
+### Deploy com Docker
 
-#### Build and Run with Docker Compose
+#### Build e Execução com Docker Compose
 
-1. **Build and start the application**:
+1. **Build e iniciar a aplicação**:
    ```bash
    docker-compose up --build
    ```
 
-2. **Run in detached mode**:
+2. **Executar em modo detached**:
    ```bash
    docker-compose up -d --build
    ```
 
-3. **Stop the application**:
+3. **Parar a aplicação**:
    ```bash
    docker-compose down
    ```
 
-#### Manual Docker Commands
+#### Comandos Docker Manuais
 
-1. **Build the Docker image**:
+1. **Build da imagem Docker**:
    ```bash
    docker build -t agenda-app .
    ```
 
-2. **Run the container**:
+2. **Executar o container**:
    ```bash
    docker run -p 8080:8080 agenda-app
    ```
 
-### VPS Deployment
+## 🚀 Deploy na VPS
 
-1. **Copy files to your VPS**:
-   ```bash
-   scp -r . user@your-vps-ip:/path/to/deployment/
-   ```
+### Pré-requisitos na VPS
+- Ubuntu/Debian Linux
+- Acesso SSH
+- Usuário com privilégios sudo
+- Git configurado com acesso ao repositório
 
-2. **SSH into your VPS**:
-   ```bash
-   ssh user@your-vps-ip
-   ```
+### Comandos para Deploy
 
-3. **Navigate to deployment directory**:
-   ```bash
-   cd /path/to/deployment/
-   ```
+#### 1. Conectar na VPS:
+```bash
+ssh usuario@ip-da-vps
+```
 
-4. **Run with Docker Compose**:
-   ```bash
-   docker-compose up -d --build
-   ```
+#### 2. Executar o deploy:
+```bash
+# Baixar o script de deploy
+curl -O https://raw.githubusercontent.com/galotinho/agenda/main/deploy-vps.sh
 
-5. **Check logs**:
-   ```bash
-   docker-compose logs -f
-   ```
+# Dar permissão de execução
+chmod +x deploy-vps.sh
 
-## Configuration
+# Executar o deploy
+./deploy-vps.sh
+```
 
-### Development
-- Uses `application.properties`
-- H2 console enabled
-- SQL logging enabled
+#### 3. Verificar se está funcionando:
+```bash
+# Verificar containers
+docker ps
 
-### Production
-- Uses `application-prod.properties`
-- H2 console disabled
-- Reduced logging
-- Health check endpoints enabled
+# Verificar logs
+docker-compose logs -f
 
-## Database
+# Testar a API
+curl http://localhost:8080/actuator/health
+```
 
-The application uses H2 in-memory database by default. For production, consider switching to:
+### 🔄 Para atualizações futuras na VPS:
+
+```bash
+# Simplesmente execute o script novamente
+./deploy-vps.sh
+```
+
+### 📍 URLs de acesso:
+
+Após o deploy, a aplicação estará disponível em:
+- **API**: `http://IP-DA-VPS:8080`
+- **Health Check**: `http://IP-DA-VPS:8080/actuator/health`
+- **Console H2**: `http://IP-DA-VPS:8080/h2-console` (apenas em desenvolvimento)
+
+## 🧪 Testando a API
+
+### Registrar usuário:
+```bash
+curl -X POST http://IP-DA-VPS:8080/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "João Silva",
+    "email": "joao@example.com",
+    "senha": "senha123"
+  }'
+```
+
+### Fazer login:
+```bash
+curl -X POST http://IP-DA-VPS:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "joao@example.com",
+    "senha": "senha123"
+  }'
+```
+
+### Criar contato:
+```bash
+curl -X POST http://IP-DA-VPS:8080/api/agenda \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "Maria Silva",
+    "telefone": "+5511987654321"
+  }'
+```
+
+### Listar contatos:
+```bash
+curl http://IP-DA-VPS:8080/api/agenda
+```
+
+## ⚙️ Configuração
+
+### Desenvolvimento
+- Usa `application.properties`
+- Console H2 habilitado
+- Log SQL habilitado
+
+### Produção
+- Usa `application-prod.properties`
+- Console H2 desabilitado
+- Log reduzido
+- Endpoints de health check habilitados
+
+## 🗄️ Banco de Dados
+
+A aplicação usa banco H2 em memória por padrão. Para produção, considere migrar para:
 - PostgreSQL
 - MySQL
 - MariaDB
 
-## Health Checks
+## 🛠️ Comandos Úteis na VPS
 
-The application includes Spring Boot Actuator for monitoring:
-- Health endpoint: `/actuator/health`
+```bash
+# Ver status dos containers
+docker ps
 
-## Security Notes
+# Ver logs da aplicação
+docker-compose logs -f
 
-⚠️ **Important**: This is a basic implementation for demonstration purposes. For production use, consider:
+# Parar a aplicação
+docker-compose down
 
-1. **Password Hashing**: Implement proper password hashing (BCrypt)
-2. **JWT Authentication**: Add JWT tokens for stateless authentication
-3. **Input Validation**: Add comprehensive input validation
-4. **HTTPS**: Use HTTPS in production
-5. **Database**: Use a persistent database instead of H2
-6. **Error Handling**: Implement global exception handling
-7. **Rate Limiting**: Add rate limiting for API endpoints
+# Reiniciar a aplicação
+docker-compose restart
 
-## Testing
+# Atualizar aplicação
+./deploy-vps.sh
 
-Run tests with:
+# Limpar containers antigos
+docker system prune -a
+```
+
+## 🔒 Notas de Segurança
+
+⚠️ **Importante**: Esta é uma implementação básica para fins de demonstração. Para uso em produção, considere:
+
+1. **Hash de Senhas**: Implementar hash adequado de senhas (BCrypt)
+2. **Autenticação JWT**: Adicionar tokens JWT para autenticação stateless
+3. **Validação de Entrada**: Adicionar validação abrangente de entrada
+4. **HTTPS**: Usar HTTPS em produção
+5. **Banco de Dados**: Usar um banco persistente ao invés do H2
+6. **Tratamento de Erros**: Implementar tratamento global de exceções
+7. **Rate Limiting**: Adicionar limitação de taxa para endpoints da API
+
+## 🧪 Testes
+
+Executar testes com:
 ```bash
 ./mvnw test
 ```
 
-## License
+## 📄 Licença
 
-This project is for educational purposes.
+Este projeto é para fins educacionais.

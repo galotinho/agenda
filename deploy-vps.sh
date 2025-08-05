@@ -1,30 +1,36 @@
 #!/bin/bash
 
-# Deployment script for VPS
-# Usage: ./deploy.sh [repository-url]
-# Example: ./deploy.sh https://github.com/seu-usuario/agenda-spring-boot.git
+# VPS Deployment script
+# Usage: ./deploy-vps.sh [repository-url]
+# Example: ./deploy-vps.sh git@github.com:galotinho/agenda.git
 
-REPO_URL=${1:-"https://github.com/seu-usuario/agenda-spring-boot.git"}
+REPO_URL=${1:-"git@github.com:galotinho/agenda.git"}
 APP_DIR="/opt/agenda-app"
 
-echo "🚀 Starting deployment process..."
+echo "🚀 Starting VPS deployment process..."
 
 # Check if Git is installed
 if ! command -v git &> /dev/null; then
-    echo "❌ Git is not installed. Please install Git first."
-    exit 1
+    echo "❌ Git is not installed. Installing Git..."
+    sudo apt update
+    sudo apt install -y git
 fi
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
-    echo "❌ Docker is not installed. Please install Docker first."
-    exit 1
+    echo "❌ Docker is not installed. Installing Docker..."
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+    sudo usermod -aG docker $USER
+    rm get-docker.sh
+    echo "⚠️  Please log out and log back in for Docker permissions to take effect."
 fi
 
 # Check if Docker Compose is installed
 if ! command -v docker-compose &> /dev/null; then
-    echo "❌ Docker Compose is not installed. Please install Docker Compose first."
-    exit 1
+    echo "❌ Docker Compose is not installed. Installing Docker Compose..."
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
 fi
 
 # Create application directory if it doesn't exist
@@ -64,13 +70,19 @@ sleep 30
 # Check if the application is running
 if curl -f http://localhost:8080/actuator/health > /dev/null 2>&1; then
     echo "✅ Application is running successfully!"
-    echo "🌐 Application URL: http://localhost:8080"
-    echo "❤️  Health Check: http://localhost:8080/actuator/health"
-    echo "📊 H2 Console: http://localhost:8080/h2-console (if enabled)"
+    echo "🌐 Application URL: http://$(curl -s ifconfig.me):8080"
+    echo "❤️  Health Check: http://$(curl -s ifconfig.me):8080/actuator/health"
+    echo "📊 H2 Console: http://$(curl -s ifconfig.me):8080/h2-console (if enabled)"
 else
     echo "❌ Application failed to start. Check logs:"
     docker-compose logs
     exit 1
 fi
 
-echo "🎉 Deployment completed successfully!"
+echo "🎉 VPS Deployment completed successfully!"
+echo ""
+echo "📋 Useful commands:"
+echo "  - View logs: docker-compose logs -f"
+echo "  - Stop app: docker-compose down"
+echo "  - Restart app: docker-compose restart"
+echo "  - Update app: ./deploy-vps.sh git@github.com:galotinho/agenda.git"
